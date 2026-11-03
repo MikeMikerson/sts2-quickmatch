@@ -33,13 +33,14 @@ internal static class VoiceChat
     private static VoiceSession? _session;
     private static RelayRoute? _route;
     private static GodotVoiceOutput? _godotOutput;
-    private static long _lastTickAt = long.MinValue;
+    // Null until the first tick: a long.MinValue start overflowed in InMatch and read as in a match.
+    private static long? _lastTickAt;
 
     /// <summary>This match's voice, or null when the match has no relay room (desktop without QuickMatchRelay).</summary>
     public static VoiceSession? Session => _session;
 
     /// <summary>A quick match is running, so the voice controls are shown.</summary>
-    public static bool InMatch => ChatClock.Now() - _lastTickAt < MatchGoneMs;
+    public static bool InMatch => _lastTickAt is { } at && ChatClock.Now() - at < MatchGoneMs;
 
     /// <summary>The other players of the match who can hear us, for the Voice panel.</summary>
     public static IReadOnlyCollection<ulong> Members => _session?.Members ?? (IReadOnlyCollection<ulong>)Array.Empty<ulong>();
@@ -96,7 +97,8 @@ internal static class VoiceChat
     /// <summary>Called by the lobby chat transports after their own update, every frame of a match.</summary>
     public static void Tick(RelayRoute? route)
     {
-        _lastTickAt = ChatClock.Now();
+        long now = ChatClock.Now();
+        _lastTickAt = now;
         if (route != _route)
         {
             End();
@@ -112,7 +114,7 @@ internal static class VoiceChat
         }
         Apply(VoiceStore.Settings, _session);
         _session.SetMembers(_route.VoiceMembers);
-        _session.Update(_lastTickAt, PushToTalkHeld());
+        _session.Update(now, PushToTalkHeld());
     }
 
     /// <summary>The match connection closed: stop recording and playing, and log what voice did.</summary>

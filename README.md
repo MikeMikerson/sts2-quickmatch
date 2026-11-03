@@ -126,7 +126,7 @@ For QuickMatch 0.3.0 against Slay the Spire 2 v0.111.0 (macOS assemblies, .NET S
 `global.json` asks for) the result is:
 
 ```
-594f9385c1723982af8207e93e0af229a235d8698b8e29b7261d591332e35408
+66caccccb251a547d9fb0c076664fc4164dc32fc7d30bc7d3b52f6145b3bf055
 ```
 
 and `QuickMatch.json` is
