@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <RelayDir>$(MSBuildProjectDirectory)/../../relay</RelayDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The companion's settings and WebSocket transport, and QuickMatch's relay client they serve: plain C#, compiled directly (no game, no Godot). -->
+    <Compile Include="../QuickMatch.Relay/Relay/*.cs" Link="Mod/Relay/%(Filename)%(Extension)" />
+    <Compile Include="../QuickMatch/Transport/IRelayTransport.cs" Link="QuickMatch/IRelayTransport.cs" />
+    <Compile Include="../QuickMatch/Transport/RelaySession.cs" Link="QuickMatch/RelaySession.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The live tests run the relay's source with wrangler dev from here. -->
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>RelayDir</_Parameter1>
+      <_Parameter2>$(RelayDir)</_Parameter2>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+  </ItemGroup>
+</Project>

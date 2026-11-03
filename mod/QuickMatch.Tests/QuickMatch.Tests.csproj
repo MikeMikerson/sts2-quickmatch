@@ -1,0 +1,61 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <Sts2AppPath Condition=" '$(Sts2AppPath)' == '' ">$(HOME)/Library/Application Support/Steam/steamapps/common/Slay the Spire 2/SlayTheSpire2.app</Sts2AppPath>
+    <Sts2DataPath Condition=" '$(Sts2DataPath)' == '' ">$(Sts2AppPath)/Contents/Resources/data_sts2_macos_arm64</Sts2DataPath>
+    <QuickMatchDll>$(MSBuildProjectDirectory)/../QuickMatch/bin/$(Configuration)/net9.0/QuickMatch.dll</QuickMatchDll>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The matching rules are plain C#, so the test compiles the source directly (no game assemblies). -->
+    <Compile Include="../QuickMatch/Matchmaking/MatchPolicy.cs" Link="MatchPolicy.cs" />
+    <!-- The lobby chat transport core is plain C# too; tests run it against a simulated Steam. -->
+    <Compile Include="../QuickMatch/Lobby/ILobbyBackend.cs" Link="Transport/ILobbyBackend.cs" />
+    <Compile Include="../QuickMatch/Transport/ChatFraming.cs" Link="Transport/ChatFraming.cs" />
+    <Compile Include="../QuickMatch/Transport/ChatLink.cs" Link="Transport/ChatLink.cs" />
+    <Compile Include="../QuickMatch/Transport/ChatReasons.cs" Link="Transport/ChatReasons.cs" />
+    <Compile Include="../QuickMatch/Transport/ChatHostCore.cs" Link="Transport/ChatHostCore.cs" />
+    <Compile Include="../QuickMatch/Transport/ChatClientCore.cs" Link="Transport/ChatClientCore.cs" />
+    <!-- The relay route, its encryption and protocol client; tests run them against a simulated relay. -->
+    <Compile Include="../QuickMatch/Transport/IRelayTransport.cs" Link="Transport/IRelayTransport.cs" />
+    <Compile Include="../QuickMatch/Transport/RelayCrypto.cs" Link="Transport/RelayCrypto.cs" />
+    <Compile Include="../QuickMatch/Transport/RelaySession.cs" Link="Transport/RelaySession.cs" />
+    <Compile Include="../QuickMatch/Transport/RelayRoute.cs" Link="Transport/RelayRoute.cs" />
+    <!-- Which connection a game uses, and a desktop host's routing between Steam sockets and lobby chat. -->
+    <Compile Include="../QuickMatch/Steam/LobbyKeys.cs" Link="Transport/LobbyKeys.cs" />
+    <Compile Include="../QuickMatch/Transport/LobbyLinks.cs" Link="Transport/LobbyLinks.cs" />
+    <Compile Include="../QuickMatch/Transport/MixedRoutes.cs" Link="Transport/MixedRoutes.cs" />
+    <!-- What each touch on the map means; plain C#, the Godot side only feeds it. -->
+    <Compile Include="../QuickMatch/MapPen/PenGesture.cs" Link="MapPen/PenGesture.cs" />
+    <!-- Voice chat's core (codec, packets, encryption, gate, jitter buffer, limiter, mutes, session) and its Opus codec; plain C#. -->
+    <Compile Include="../QuickMatch/Voice/VoiceFormat.cs;../QuickMatch/Voice/VoicePacket.cs;../QuickMatch/Voice/VoiceCrypto.cs;../QuickMatch/Voice/VoiceCodec.cs;../QuickMatch/Voice/VoiceGate.cs;../QuickMatch/Voice/JitterBuffer.cs;../QuickMatch/Voice/VoiceLimiter.cs;../QuickMatch/Voice/VoiceMutes.cs;../QuickMatch/Voice/IVoiceDevice.cs;../QuickMatch/Voice/VoiceSession.cs" LinkBase="Voice" />
+    <Compile Include="../QuickMatch/ThirdParty/Concentus/**/*.cs" LinkBase="ThirdParty/Concentus" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Patch-target test inspects the built mod and the installed game without loading them. -->
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>Sts2DataPath</_Parameter1>
+      <_Parameter2>$(Sts2DataPath)</_Parameter2>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>QuickMatchDll</_Parameter1>
+      <_Parameter2>$(QuickMatchDll)</_Parameter2>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>QuickMatchManifest</_Parameter1>
+      <_Parameter2>$(MSBuildProjectDirectory)/../QuickMatch/QuickMatch.json</_Parameter2>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+    <PackageReference Include="System.Reflection.MetadataLoadContext" Version="9.0.7" />
+  </ItemGroup>
+</Project>

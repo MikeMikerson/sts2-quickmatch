@@ -1,0 +1,15 @@
+{
+  "name": "quickmatch-relay",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Forwards QuickMatch game messages between the players of a match, faster than Steam lobby chat.",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "node --test test/"
+  },
+  "devDependencies": {
+    "wrangler": "4.150.0"
+  }
+}

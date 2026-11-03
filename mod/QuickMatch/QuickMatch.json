@@ -1,0 +1,12 @@
+{
+  "id": "QuickMatch",
+  "name": "Quick Match",
+  "author": "QuickMatch",
+  "description": "Random co-op matchmaking: pick 2, 3 or 4 players and get grouped with other players who are searching. Everyone needs this mod.",
+  "version": "v0.3.0",
+  "affects_gameplay": false,
+  "has_dll": true,
+  "has_pck": false,
+  "min_game_version": "0.111.0",
+  "dependencies": []
+}

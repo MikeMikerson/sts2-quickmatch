@@ -1,0 +1,14 @@
+{
+  "id": "QuickMatchRelay",
+  "name": "Quick Match Relay",
+  "author": "QuickMatch",
+  "description": "Makes Quick Match games with phone players faster by carrying their messages over a small relay instead of Steam lobby chat when that is quicker, and carries voice chat. Messages are encrypted; the relay cannot read them. Install it next to Quick Match. See its README to use your own relay or turn it off.",
+  "version": "v0.1.1",
+  "affects_gameplay": false,
+  "has_dll": true,
+  "has_pck": false,
+  "min_game_version": "0.111.0",
+  "dependencies": [
+    { "id": "QuickMatch" }
+  ]
+}

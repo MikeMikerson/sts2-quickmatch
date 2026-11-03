@@ -1,0 +1,32 @@
+<Project>
+  <!--
+    macOS (Apple silicon) Steam install paths. Override any of these on the command line,
+    e.g. dotnet build -p:Sts2AppPath=/path/to/SlayTheSpire2.app
+    On Windows, point Sts2DataPath at <install>\data_sts2_windows_x86_64 and ModsPath at <install>\mods.
+  -->
+  <PropertyGroup>
+    <Sts2AppPath Condition=" '$(Sts2AppPath)' == '' ">$(HOME)/Library/Application Support/Steam/steamapps/common/Slay the Spire 2/SlayTheSpire2.app</Sts2AppPath>
+    <Sts2DataPath Condition=" '$(Sts2DataPath)' == '' ">$(Sts2AppPath)/Contents/Resources/data_sts2_macos_arm64</Sts2DataPath>
+    <!-- ModManager loads "mods" next to the game executable, which on macOS is inside the app bundle. -->
+    <ModsPath Condition=" '$(ModsPath)' == '' ">$(Sts2AppPath)/Contents/MacOS/mods</ModsPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="sts2">
+      <HintPath>$(Sts2DataPath)/sts2.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="GodotSharp">
+      <HintPath>$(Sts2DataPath)/GodotSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <!-- The game's own Harmony; ModManager resolves 0Harmony to this copy at runtime. -->
+    <Reference Include="0Harmony">
+      <HintPath>$(Sts2DataPath)/0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Steamworks.NET">
+      <HintPath>$(Sts2DataPath)/Steamworks.NET.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+</Project>

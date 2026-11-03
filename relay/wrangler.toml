@@ -1,0 +1,19 @@
+name = "quickmatch-relay"
+main = "src/index.js"
+compatibility_date = "2026-09-15"
+# The free workers.dev address is the relay's address; no domain is needed.
+workers_dev = true
+preview_urls = false
+
+[observability]
+# Cloudflare's request log would record each connection; the relay keeps nothing about players.
+enabled = false
+
+[[durable_objects.bindings]]
+name = "RELAY"
+class_name = "RelayHub"
+
+# The free plan only offers SQLite-backed Durable Objects. The relay stores nothing in it.
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["RelayHub"]

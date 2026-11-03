@@ -1,0 +1,14 @@
+{
+  "id": "QuickMatchAndroid",
+  "name": "Quick Match for Android",
+  "author": "QuickMatch",
+  "description": "Lets Quick Match use Steam lobbies in the Android StS2 Launcher, which has no Steamworks. Install it next to Quick Match. On desktop it does nothing.",
+  "version": "v0.1.0",
+  "affects_gameplay": false,
+  "has_dll": true,
+  "has_pck": false,
+  "min_game_version": "0.111.0",
+  "dependencies": [
+    { "id": "QuickMatch" }
+  ]
+}

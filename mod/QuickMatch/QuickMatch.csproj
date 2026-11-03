@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- The game runs .NET 9 (sts2.runtimeconfig.json). -->
+    <TargetFramework>net9.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <AssemblyName>QuickMatch</AssemblyName>
+    <RootNamespace>QuickMatch</RootNamespace>
+    <!-- ModManager reads every .json under the mods folder as a manifest, so never ship a deps.json. -->
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+    <!-- Reproducible builds with no local paths: the same source and game version give the same DLL. -->
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <!-- Leave the git commit out of the version and PDB, so a fork or a new commit gives the same DLL. -->
+    <EnableSourceControlManagerQueries>false</EnableSourceControlManagerQueries>
+    <PathMap>$(MSBuildProjectDirectory)/=/_/</PathMap>
+  </PropertyGroup>
+
+  <!--
+    Copies the built mod into the STS2 mods folder: only the dll, pdb and manifest.
+    The DLL name must equal the manifest id (ModManager loads <id>.dll).
+  -->
+  <Target Name="CopyToModsFolder" AfterTargets="Build" Condition=" '$(ModsPath)' != '' ">
+    <PropertyGroup>
+      <_ModDestDir>$(ModsPath)/$(AssemblyName)</_ModDestDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(_ModDestDir)" />
+    <Copy SourceFiles="$(TargetPath);$(TargetDir)$(TargetName).pdb;$(MSBuildProjectDirectory)/$(AssemblyName).json" DestinationFolder="$(_ModDestDir)" SkipUnchangedFiles="true" />
+    <Message Importance="high" Text="Copied $(AssemblyName).dll, .pdb and .json to $(_ModDestDir)" />
+  </Target>
+</Project>

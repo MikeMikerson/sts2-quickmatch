@@ -1,0 +1,20 @@
+# Build outputs
+bin/
+obj/
+*.binlog
+TestResults/
+
+# Relay server tools and local secrets
+node_modules/
+.wrangler/
+.dev.vars
+
+# A relay setting is local; set your own (see mod/QuickMatch.Relay/README.md)
+QuickMatchRelay.cfg
+
+# Editors and macOS
+.DS_Store
+.vs/
+.vscode/
+.idea/
+*.user

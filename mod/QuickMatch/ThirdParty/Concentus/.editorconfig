@@ -1,0 +1,4 @@
+# Third-party source kept byte-identical to upstream: treat it as generated code, so the mod's
+# nullable and analyzer settings do not apply to it.
+[*.cs]
+generated_code = true

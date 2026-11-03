@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- The game runs .NET 9 on desktop; the Android launcher runs it on Mono (.NET for Android). -->
+    <TargetFramework>net9.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <!-- ModManager loads <id>.dll, so the assembly is named after the manifest id. -->
+    <AssemblyName>QuickMatchRelay</AssemblyName>
+    <RootNamespace>QuickMatchRelay</RootNamespace>
+    <!-- ModManager reads every .json under the mods folder as a manifest, so never ship a deps.json. -->
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+    <Sts2AppPath Condition=" '$(Sts2AppPath)' == '' ">$(HOME)/Library/Application Support/Steam/steamapps/common/Slay the Spire 2/SlayTheSpire2.app</Sts2AppPath>
+    <Sts2DataPath Condition=" '$(Sts2DataPath)' == '' ">$(Sts2AppPath)/Contents/Resources/data_sts2_macos_arm64</Sts2DataPath>
+    <QuickMatchDll>$(MSBuildProjectDirectory)/../QuickMatch/bin/$(Configuration)/net9.0/QuickMatch.dll</QuickMatchDll>
+    <!-- Reproducible builds with no local paths: the same source and game version give the same DLL. -->
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <!-- Leave the git commit out of the version and PDB, so a fork or a new commit gives the same DLL. -->
+    <EnableSourceControlManagerQueries>false</EnableSourceControlManagerQueries>
+    <PathMap>$(MSBuildProjectDirectory)/=/_/</PathMap>
+  </PropertyGroup>
+
+  <!--
+    Nothing here is copied into the build output: the game comes from the install or the launcher,
+    and QuickMatch is installed as its own mod. QuickMatch is referenced as a built DLL rather than a
+    project, so building this never runs QuickMatch's copy-to-game step.
+  -->
+  <ItemGroup>
+    <Reference Include="sts2">
+      <HintPath>$(Sts2DataPath)/sts2.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="GodotSharp">
+      <HintPath>$(Sts2DataPath)/GodotSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="QuickMatch">
+      <HintPath>$(QuickMatchDll)</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="RequireQuickMatchBuild" BeforeTargets="ResolveAssemblyReferences" Condition="!Exists('$(QuickMatchDll)')">
+    <Error Text="Build QuickMatch first (dotnet build -c $(Configuration) -p:ModsPath= in ../QuickMatch): $(QuickMatchDll) is missing." />
+  </Target>
+</Project>
