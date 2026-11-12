@@ -12,7 +12,8 @@ only through a companion that supplies one (see [Relay](#relay-optional)).
 
 ## Requirements
 
-- Every player: the same game version (v0.111.0 for this build) and Quick Match 0.3.0. Lobbies carry
+- Every player: the same game version (v0.113.0 for this build) and Quick Match 0.3.1 (0.3.0 was the
+  build for v0.111.0). Lobbies carry
   a protocol number, so players on different releases (0.2.0 and 0.3.0, for example) never see each
   other's lobbies, and a host turns away a player of another release who joins anyway.
 - Every player must load the **same gameplay-affecting mods**. Quick Match itself does not count (it

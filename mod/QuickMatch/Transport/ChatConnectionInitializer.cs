@@ -21,6 +21,11 @@ internal sealed class ChatConnectionInitializer : IClientConnectionInitializer
 
     public static ChatConnectionInitializer FromLobby(ulong lobby) => new(lobby);
 
+    public PlatformType Platform => PlatformType.Steam;
+
+    /// <summary>The lobby's owner, as the game's Steam initializer gives for a lobby; null while Steam does not know it.</summary>
+    public ulong? GetHostId() => LobbyBackend.Current.Owner(_lobby) is var owner and not 0 ? owner : null;
+
     public async Task<NetErrorInfo?> Connect(INetClientGameService gameService, CancellationToken cancelToken = default)
     {
         if (gameService.IsConnected)

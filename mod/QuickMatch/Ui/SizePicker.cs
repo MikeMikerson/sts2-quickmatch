@@ -19,10 +19,13 @@ internal static class SizePicker
 
     private static readonly (string Node, int Size)[] Cards =
     [
-        ("StandardButton", 2),
-        ("DailyButton", 3),
-        ("CustomRunButton", 4),
+        ("ButtonContainer/StandardButton", 2),
+        ("ButtonContainer/DailyButton", 3),
+        ("ButtonContainer/CustomRunButton", 4),
     ];
+
+    /// <summary>The host submenu's other cards (game v0.113.0), which the picker does not use.</summary>
+    private static readonly string[] Unused = ["ButtonContainer/BlitzButton", "ButtonContainer/DreadButton"];
 
     private static NMultiplayerHostSubmenu? _picker;
 
@@ -51,6 +54,12 @@ internal static class SizePicker
             button.SetEnabled(true);
             button.RefreshLabels();
         }
+        // The vanilla method shows Dread once it is unlocked and shrinks the row to fit five cards.
+        foreach (string node in Unused)
+        {
+            picker.GetNode<Control>(node).Visible = false;
+        }
+        picker.GetNode<Control>("ButtonContainer").Scale = Vector2.One;
         ShowStatus(null);
     }
 
@@ -91,9 +100,9 @@ internal static class SizePicker
             var button = picker.GetNode<NSubmenuButton>(node);
             if (icon != null)
             {
-                button.GetNode<TextureRect>("Icon").Texture = icon;
+                button.GetNode<TextureRect>(QuickMatchButton.Portrait).Texture = icon;
             }
-            button.SetIconAndLocalization($"QUICKMATCH_{size}");
+            button.SetLocalization($"QUICKMATCH_{size}");
         }
         _picker = picker;
         return picker;

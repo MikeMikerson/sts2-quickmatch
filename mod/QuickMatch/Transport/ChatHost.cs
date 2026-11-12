@@ -90,7 +90,7 @@ internal sealed class ChatHost : AbstractTestNetHost, IChatHostEvents
         }
     }
 
-    public override void DisconnectClient(ulong peerId, NetError reason, bool now = false)
+    public override void DisconnectClient(ulong peerId, NetError reason, bool now = false, string? debugReason = null)
     {
         _core.Disconnect(peerId, (ushort)reason);
     }

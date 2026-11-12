@@ -434,19 +434,24 @@ public class TransportTests
     [Fact]
     public void EachReleaseMatchesOnlyItself()
     {
-        // The lobby markers searches filter on, and the connection protocol, of each release. A release
-        // that cannot play with the ones before it gets a row of new values.
-        var releases = new Dictionary<string, (string Proto, string ResumeProto, ushort Protocol)>
+        // The lobby markers searches filter on, the connection protocol, and the game version of each release.
+        // Lobbies carry the game version, so releases for different game versions never meet and may share
+        // values; a release that cannot play with another for the same game gets a row of new values. Null:
+        // the game version was not recorded, so that release is treated as meeting every other.
+        var releases = new Dictionary<string, (string Proto, string ResumeProto, ushort Protocol, string? Game)>
         {
-            ["v0.2.0"] = ("4", "3", 2),
-            ["v0.3.0"] = ("5", "4", 3),
+            ["v0.2.0"] = ("4", "3", 2, null),
+            ["v0.3.0"] = ("5", "4", 3, "0.111.0"),
+            ["v0.3.1"] = ("5", "4", 3, "0.113.0"),
         };
         string manifest = typeof(TransportTests).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>().Single(a => a.Key == "QuickMatchManifest").Value!;
-        string version = System.Text.Json.JsonDocument.Parse(File.ReadAllText(manifest)).RootElement.GetProperty("version").GetString()!;
+        var root = System.Text.Json.JsonDocument.Parse(File.ReadAllText(manifest)).RootElement;
+        string version = root.GetProperty("version").GetString()!;
 
         Assert.True(releases.TryGetValue(version, out var current), $"QuickMatch.json says {version}: give it a row here");
-        Assert.Equal(current, (LobbyKeys.ProtoValue, LobbyKeys.ResumeProtoValue, ChatHostCore.Protocol));
-        foreach ((string other, var values) in releases.Where(r => r.Key != version))
+        Assert.Equal((current.Proto, current.ResumeProto, current.Protocol), (LobbyKeys.ProtoValue, LobbyKeys.ResumeProtoValue, ChatHostCore.Protocol));
+        Assert.Equal(current.Game, root.GetProperty("min_game_version").GetString());
+        foreach ((string other, var values) in releases.Where(r => r.Key != version && (r.Value.Game == null || r.Value.Game == current.Game)))
         {
             Assert.True(values.Proto != current.Proto && values.ResumeProto != current.ResumeProto && values.Protocol != current.Protocol,
                 $"{version} would find or accept {other} players");

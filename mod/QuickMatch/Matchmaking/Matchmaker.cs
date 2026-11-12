@@ -260,9 +260,9 @@ internal static class Matchmaker
         try
         {
             ct.ThrowIfCancellationRequested();
-            if (result.sessionState != RunSessionState.InLobby || result.gameMode != GameMode.Standard || !result.joinResponse.HasValue)
+            if (result.sessionState != RunSessionState.InLobby || result.gameMode != GameMode.Standard || result.isCustom || !result.joinResponse.HasValue)
             {
-                MainFile.Logger.Info($"join {lobbyId}: not an open standard lobby (state={result.sessionState} mode={result.gameMode})");
+                MainFile.Logger.Info($"join {lobbyId}: not an open standard lobby (state={result.sessionState} mode={result.gameMode} custom={result.isCustom})");
                 flow.NetService.Disconnect(result.sessionState == RunSessionState.Running ? NetError.RunInProgress : NetError.Quit);
                 MarkFailed(lobbyId);
                 return false;
@@ -293,7 +293,7 @@ internal static class Matchmaker
     /// </summary>
     private static async Task<(JoinFlow Flow, JoinResult Result)?> ConnectAsync(ulong lobbyId, CancellationToken ct)
     {
-        var flow = new JoinFlow(new NetClientGameService(PeerVersionInfo.LocalDefault()));
+        var flow = new JoinFlow(new NetClientGameService(PeerVersionInfo.LocalDefault()), ConnectionFor(lobbyId));
         _flow = flow;
         bool finished = false;
         using (ct.Register(() => flow.CancelToken.Cancel()))
@@ -302,7 +302,7 @@ internal static class Matchmaker
             try
             {
                 // On failure JoinFlow disconnects by itself before throwing.
-                JoinResult result = await flow.Begin(ConnectionFor(lobbyId), (SceneTree)Engine.GetMainLoop());
+                JoinResult result = await flow.Begin((SceneTree)Engine.GetMainLoop());
                 return (flow, result);
             }
             catch (ClientConnectionFailedException e)
@@ -408,9 +408,9 @@ internal static class Matchmaker
         try
         {
             ct.ThrowIfCancellationRequested();
-            if (result.sessionState != RunSessionState.InLoadedLobby || result.gameMode != GameMode.Standard || !result.loadJoinResponse.HasValue)
+            if (result.sessionState != RunSessionState.InLoadedLobby || result.gameMode != GameMode.Standard || result.isCustom || !result.loadJoinResponse.HasValue)
             {
-                MainFile.Logger.Info($"rejoin {lobbyId}: not a loaded standard lobby (state={result.sessionState} mode={result.gameMode})");
+                MainFile.Logger.Info($"rejoin {lobbyId}: not a loaded standard lobby (state={result.sessionState} mode={result.gameMode} custom={result.isCustom})");
                 flow.NetService.Disconnect(NetError.Quit);
                 return false;
             }

@@ -95,7 +95,7 @@ internal sealed class MixedHost : AbstractTestNetHost, INetHostHandler, IChatHos
         _routes.SendAll(bytes, length, mode == NetTransferMode.Reliable, channel);
     }
 
-    public override void DisconnectClient(ulong peerId, NetError reason, bool now = false)
+    public override void DisconnectClient(ulong peerId, NetError reason, bool now = false, string? debugReason = null)
     {
         _routes.Disconnect(peerId, (ushort)reason, now);
     }

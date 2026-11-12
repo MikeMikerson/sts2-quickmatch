@@ -27,7 +27,7 @@ Quick Match button disappears.
 Open **Multiplayer**, choose **Quick Match**, and pick **2, 3 or 4 players**. When the lobby is full
 and everyone has pressed Embark, the run starts.
 
-- Everyone needs QuickMatch 0.3.0, the same game version, and the same gameplay-changing mods
+- Everyone needs QuickMatch 0.3.1 (0.3.0 on game v0.111.0), the same game version, and the same gameplay-changing mods
   (QuickMatch itself does not count). Players who differ never see each other: a 0.2.0 player and a
   0.3.0 player are never matched.
 - Steam must be running.
@@ -122,15 +122,15 @@ dotnet build -c Release -p:ModsPath=
 shasum -a 256 bin/Release/net9.0/QuickMatch.dll
 ```
 
-For QuickMatch 0.3.0 against Slay the Spire 2 v0.111.0 (macOS assemblies, .NET SDK 10.0.402, as
+For QuickMatch 0.3.1 against Slay the Spire 2 v0.113.0 (macOS assemblies, .NET SDK 10.0.402, as
 `global.json` asks for) the result is:
 
 ```
-66caccccb251a547d9fb0c076664fc4164dc32fc7d30bc7d3b52f6145b3bf055
+4c556b610a2be84eda0a81cc0800ee8264ba41ea6f9561514f3c13a51a8a4cfc
 ```
 
 and `QuickMatch.json` is
-`6042f9e77c6c3028f3da8c9770876d51043c6c50de87c519601a65673e24b62c`. These are the files the iPhone
+`cf15b3eb81d3845906f6094c23308da8448b1be6ba7098c5815ffde9d1948fef`. These are the files the iPhone
 launcher pins. If your hash differs, check the game version first, then `dotnet --version`: a
 different SDK (and so compiler) can change the output.
 

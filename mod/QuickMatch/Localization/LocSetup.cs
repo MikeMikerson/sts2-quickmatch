@@ -6,7 +6,7 @@ namespace QuickMatch.Localization;
 
 /// <summary>
 /// Merges the mod's strings into the game's <c>main_menu_ui</c> table, where
-/// <c>NSubmenuButton.SetIconAndLocalization</c> looks up <c>KEY.title</c> / <c>KEY.description</c>.
+/// <c>NSubmenuButton.SetLocalization</c> looks up <c>KEY.title</c> / <c>KEY.description</c>.
 ///
 /// Patches the private <c>LocManager.SetLanguageInternal</c> rather than <c>Initialize</c>:
 /// every language load (first start and later language changes) goes through it with a fresh

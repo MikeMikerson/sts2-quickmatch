@@ -18,6 +18,8 @@ internal static class QuickMatchButton
     private const string NodeName = "QuickMatchButton";
     private const string RejoinNodeName = "QuickMatchRejoinButton";
     private const string ButtonScenePath = "res://scenes/ui/submenu_button.tscn";
+    // The card's picture (an NSubmenuPortrait since game v0.113.0, a TextureRect named Icon before).
+    internal const string Portrait = "SubmenuPortrait";
 
     // Hue for the card's hsv shader; the vanilla cards use 0 (Host) and 0.24 (Join).
     private const float Hue = 0.62f;
@@ -89,12 +91,12 @@ internal static class QuickMatchButton
             copy.SetShaderParameter("h", hue);
             bg.Material = copy;
         }
-        button.GetNode<TextureRect>("Icon").Texture = join.GetNode<TextureRect>("Icon").Texture;
+        button.GetNode<TextureRect>(Portrait).Texture = join.GetNode<TextureRect>(Portrait).Texture;
 
         container.AddChild(button);
         container.MoveChild(button, join.GetIndex());
         button.SetEnabled(Matchmaker.IsAvailable);
-        button.SetIconAndLocalization(locKey);
+        button.SetLocalization(locKey);
         button.Connect(NClickableControl.SignalName.Released, Callable.From<NButton>(_ => onPressed()));
     }
 }

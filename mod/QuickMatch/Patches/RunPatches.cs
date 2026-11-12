@@ -69,7 +69,7 @@ public static class RunPatches
         public static bool Prefix(SerializableRun run)
         {
             string? key = RunRecord.KeyOf(run);
-            if (key == null || RunRecord.Current?.Key != key || run.GameMode != GameMode.Standard)
+            if (key == null || RunRecord.Current?.Key != key || run.GameMode != GameMode.Standard || run.IsCustomGame)
             {
                 MainFile.Logger.Info($"loaded run key={key} is not our quick-match run; vanilla host");
                 return true;
